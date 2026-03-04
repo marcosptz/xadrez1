@@ -85,7 +85,7 @@ doc.optimizedPrint('Relatório Pesado');
 
 ---
 
-## 📐 Especificações Técnicas (Hoje)
+## 📐 Especificações Técnicas
 
 | Propriedade | Valor Padrão | Descrição |
 | --- | --- | --- |
@@ -107,4 +107,5 @@ doc.optimizedPrint('Relatório Pesado');
 ---
 
 *Desenvolvido com foco em precisão e performance para aplicações web modernas.*
+
 
