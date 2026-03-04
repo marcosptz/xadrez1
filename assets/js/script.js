@@ -1,12 +1,12 @@
 // Função para criar o tabuleiro de xadrez
 const tabuleiro = () => {
   const board = document.getElementById('board');
-  const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  const letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   const numeros = ['8', '7', '6', '5', '4', '3', '2', '1'];
   const imagensPecas = {
     // Peças Pretas (Dark)
     '♜': 'assets/img/rook.png',  // Torre preta
-    '♞': 'assets/img/knight.png',  // Cavalo preto
+    '♞': 'assets/img/horse.png',  // Cavalo preto
     '♝': 'assets/img/bishop.png',  // Bispo preto
     '♛': 'assets/img/queen.png',  // Rainha preta
     '♚': 'assets/img/king.png',  // Rei preto
@@ -14,7 +14,7 @@ const tabuleiro = () => {
 
     // Peças Brancas (Light)
     '♖': 'assets/img/rook-white.png',  // Torre branca
-    '♘': 'assets/img/knight-white.png',  // Cavalo branco
+    '♘': 'assets/img/horse-white.png',  // Cavalo branco
     '♗': 'assets/img/bishop-white.png',  // Bispo branco
     '♕': 'assets/img/queen-white.png',  // Rainha branca
     '♔': 'assets/img/king-white.png',  // Rei branco
@@ -68,6 +68,8 @@ const tabuleiro = () => {
       casa.classList.add('preta');
     }
 
+    // casa.setAttribute('data-numero', i);
+
     // Adiciona número apenas na primeira coluna (coluna 0)
     if (col === 0) {
       casa.setAttribute('data-numero', numeros[row]);
@@ -120,7 +122,7 @@ const tabuleiro = () => {
 }
 
 // Função para iniciar o jogo
-const play = () => {
+const play2 = () => {
   const casas = document.querySelectorAll('.casa');
   const obj = [];
   let count = 0;
@@ -137,6 +139,33 @@ const play = () => {
       peca: casa.querySelector('.peca') ? casa.querySelector('.peca').id : null,
       valor: parseInt(casa.getAttribute('data-valor')),
       index: parseInt(casa.getAttribute('data-index')),
+    });
+  });
+
+  return obj;
+}
+
+const play = () => {
+  const casas = document.querySelectorAll('.casa');
+  const obj = [];
+  
+  casas.forEach((casa) => {
+    const pecaElement = casa.querySelector('.peca');
+    const pecaId = pecaElement ? pecaElement.id : null;
+    
+    // Identifica o time com base no ID numérico da peça
+    let time = null;
+    if (pecaId) {
+      const idNum = parseInt(pecaId.replace('peca-', ''));
+      time = idNum < 32 ? 'preta' : 'branca'; 
+    }
+
+    obj.push({
+      casa: casa.getAttribute('data-casa'),
+      peca: pecaId,
+      valor: parseInt(casa.getAttribute('data-valor')) || 0,
+      index: parseInt(casa.getAttribute('data-index')),
+      time: time // Agora sabemos de quem é a peça
     });
   });
 
@@ -175,19 +204,17 @@ const autoMove = (pecasJogo='p') => {
     letra = document.getElementById(peca).parentNode.getAttribute('letra');
     numero = parseInt(document.getElementById(peca).parentNode.getAttribute('numero'));
 
-    console.log('peca: ', peca)
-
     if(casasIniciaisPeao.includes(estadoInicial.find(e => e.peca == peca)?.casa)) {
       pecaMove = peca;
       casaDestino = `${letra}${numero - 2}`;
-      // console.log('peca:', pecaMove, pecaDestino);
     } else {
       pecaMove = peca;
       casaDestino = `${letra}${numero - 1}`;
     }
   });
 
-  // console.log('peca:', pecaMove, casaDestino);
+  // console.log('Peças selecionadas para mover:', pecaMove, 'Casas iniciais dos peões:', casaDestino);
+  // console.log('teste: ', estadoInicial.find(e => e.casa == casaDestino)?.valor)
 
   if(estadoInicial.find(e => e.casa == casaDestino)?.valor == 0) {
     moverPeca(pecaMove, casaDestino);
@@ -197,6 +224,108 @@ const autoMove = (pecasJogo='p') => {
   // console.log('Peças brancas do tabuleiro:', pecasBrancas);
   // console.log('Estado inicial do tabuleiro:', estadoInicial);
 }
+
+// Movimentos possíveis do cavalo (em termos de índice no tabuleiro linearizado)
+// horseMove = () => {
+//   const estadoInicial = play();
+//   const idHorses = ['peca-1', 'peca-6']; // IDs dos cavalos no estado inicial
+//   const positionHorse = estadoInicial.find(e => e.peca == idHorses[0]); // Índice do cavalo no tabuleiro linearizado
+//   const moving = [15, 17, -15, -17, 10, -10, 6, -6];
+//   const possibleMoves = moving.map(m => positionHorse.index + m).filter(i => i >= 0 && i < 64); // Filtra movimentos válidos dentro do tabuleiro
+//   let val = 0;
+
+//   possibleMoves.forEach(m => {
+//     // val = estadoInicial.find(e => e.index == m)?.valor || 0;
+//     val = Math.max(...estadoInicial.map(e => e.valor == estadoInicial.find(e => e.index == m)?.valor ? e.valor : 0));
+//     move = m;
+//     console.log(`Maior valor: ${val}`);
+//   });
+
+//   moverPeca(positionHorse.peca, estadoInicial.find(e => e.index == possibleMoves[val])?.casa);
+//   // console.log('positionHorse:', positionHorse);
+//   console.log('possibleMoves:', possibleMoves, val);
+// }
+
+const moveKnight = (knightId) => {
+  const boardState = play(); //
+  const knight = boardState.find(p => p.peca === knightId);
+  if (!knight) return;
+
+  const knightValue = knight.valor; // Geralmente 3
+  const startX = knight.index % 8;
+  const startY = Math.floor(knight.index / 8);
+
+  const offsets = [
+    { x: 2, y: 1 }, { x: 2, y: -1 }, { x: -2, y: 1 }, { x: -2, y: -1 },
+    { x: 1, y: 2 }, { x: 1, y: -2 }, { x: -1, y: 2 }, { x: -1, y: -2 }
+  ];
+
+  // 1. Mapear movimentos possíveis e calcular segurança
+  const moveEvaluations = offsets
+    .map(off => ({ x: startX + off.x, y: startY + off.y }))
+    .filter(pos => pos.x >= 0 && pos.x < 8 && pos.y >= 0 && pos.y < 8)
+    .map(pos => {
+      const targetIdx = pos.y * 8 + pos.x;
+      const target = boardState.find(e => e.index === targetIdx);
+      
+      // Verifica se a casa destino está sob ataque do inimigo
+      const sobAtaque = estaAmeacada(targetIdx, knight.time, boardState);
+      
+      return {
+        ...target,
+        sobAtaque: sobAtaque,
+        lucro: target.valor - (sobAtaque ? knightValue : 0) 
+      };
+    })
+    .filter(move => move.time !== knight.time); //
+
+  // 2. Filtrar pela sua regra: 
+  // Se houver risco, a peça capturada deve valer >= que o cavalo (3)
+  const safeOrWorthItMoves = moveEvaluations.filter(move => {
+    if (!move.sobAtaque) return true; // Sem risco, pode mover
+    return move.valor >= knightValue; // Com risco, só se a captura valer a pena
+  });
+
+  if (safeOrWorthItMoves.length === 0) {
+    console.log("Nenhum movimento seguro ou vantajoso encontrado.");
+    return;
+  }
+
+  // 3. Escolher o melhor entre os permitidos (maior valor de captura)
+  const bestMove = safeOrWorthItMoves.reduce((prev, curr) => 
+    (curr.valor > prev.valor) ? curr : prev
+  );
+
+  moverPeca(knightId, bestMove.casa); //
+};
+
+const estaAmeacada = (indexAlvo, meuTime, boardState) => {
+  const inimigoTime = meuTime === 'branca' ? 'preta' : 'branca';
+  const pecasInimigas = boardState.filter(p => p.time === inimigoTime);
+
+  const targetX = indexAlvo % 8;
+  const targetY = Math.floor(indexAlvo / 8);
+
+  for (const inimigo of pecasInimigas) {
+    const ix = inimigo.index % 8;
+    const iy = Math.floor(inimigo.index / 8);
+
+    // Exemplo: Se o inimigo for um Cavalo
+    if (inimigo.peca.includes('peca-1') || inimigo.peca.includes('peca-6') || 
+        inimigo.peca.includes('peca-57') || inimigo.peca.includes('peca-62')) {
+      const dx = Math.abs(ix - targetX);
+      const dy = Math.abs(iy - targetY);
+      if ((dx === 2 && dy === 1) || (dx === 1 && dy === 2)) return true;
+    }
+
+    // Exemplo: Se o inimigo for um Peão (ataque diagonal)
+    if (inimigo.peca.includes('peca-8') || inimigo.peca.includes('peca-48')) { // Simplificado
+      const direcao = inimigoTime === 'preta' ? 1 : -1;
+      if (iy + direcao === targetY && Math.abs(ix - targetX) === 1) return true;
+    }
+  }
+  return false;
+};
 
 // Função chamada ao iniciar o arrasto
 function drag(ev) {
@@ -255,22 +384,21 @@ function drop(ev) {
 function moverPeca(idPeca, idCasaDestino) {
   const peca = document.getElementById(idPeca);
   const casaDestino = document.getElementById(idCasaDestino);
-  const casaOrigem = peca.parentNode; // A casa onde a peça está agora
+  const casaOrigem = peca.parentNode;
 
-  if (!peca || !casaDestino) {
-      console.error("Peça ou Casa não encontrada!");
-      return;
-  }
+  if (!peca || !casaDestino) return;
 
-  // 1. Pegamos o valor da peça
   const valorPeca = peca.getAttribute("data-valor");
 
-  // 2. Atualizamos os atributos de dados (Lógica do Tabuleiro)
-  casaOrigem.setAttribute("data-valor", "0");       // Origem fica vazia
-  casaDestino.setAttribute("data-valor", valorPeca); // Destino assume o valor
+  // 1. Lógica de Captura: se houver uma peça inimiga no destino, remova-a
+  if (casaDestino.hasChildNodes()) {
+    casaDestino.innerHTML = ''; 
+  }
 
-  // 3. Movemos o elemento visualmente (Lógica do DOM)
+  // 2. Atualiza os dados nos atributos HTML
+  casaOrigem.setAttribute("data-valor", "0");
+  casaDestino.setAttribute("data-valor", valorPeca);
+
+  // 3. Move o elemento visualmente preservando a instância da peça
   casaDestino.appendChild(peca);
-
-  console.log(`Sucesso: Peça ${idPeca} movida para ${idCasaDestino}`);
 }

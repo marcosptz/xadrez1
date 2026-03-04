@@ -55,7 +55,7 @@ p {
 .casa::before {
   content: attr(data-numero);
   position: absolute;
-  top: 2px;
+  top: 0px;
   left: 2px;
 }
 
@@ -63,7 +63,7 @@ p {
 .casa::after {
   content: attr(data-letra);
   position: absolute;
-  bottom: 2px;
+  bottom: 0px;
   right: 2px;
 }
 
