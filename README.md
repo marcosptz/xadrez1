@@ -111,7 +111,3 @@ doc.optimizedPrint('Relatório Pesado');
 ---
 
 *Desenvolvido com foco em precisão e performance para aplicações web modernas.*
-
----
-
-**Dica:** No seu GitHub, você pode substituir os links de imagem genéricos por capturas de tela reais da sua biblioteca funcionando (como as que você me enviou hoje) para dar ainda mais credibilidade ao projeto!
