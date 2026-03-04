@@ -1,7 +1,3 @@
-Esta é uma documentação completa e moderna para o seu projeto, estruturada para o `README.md` do GitHub. Ela reflete todas as melhorias de performance, escala (300 DPI) e o novo sistema de zoom que implementamos hoje.
-
----
-
 # 📄 JS-PDF Library (Canvas Based)
 
 Uma biblioteca leve e poderosa em JavaScript para criação de documentos e etiquetas de alta resolução utilizando a API Canvas do HTML5. Ideal para projetos que exigem precisão de layout, como etiquetas térmicas, relatórios técnicos e documentos prontos para impressão.
@@ -111,3 +107,4 @@ doc.optimizedPrint('Relatório Pesado');
 ---
 
 *Desenvolvido com foco em precisão e performance para aplicações web modernas.*
+
